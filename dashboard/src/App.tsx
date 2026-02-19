@@ -7,6 +7,7 @@ import FeeExplorer from './components/FeeExplorer'
 import BundleBuilder from './components/BundleBuilder'
 import SwapOptimizer from './components/SwapOptimizer'
 import TransactionMonitor from './components/TransactionMonitor'
+import WhyMe from './components/WhyMe'
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>('fees')
@@ -26,6 +27,7 @@ export default function App() {
           {activeTab === 'bundles' && <BundleBuilder />}
           {activeTab === 'swap' && <SwapOptimizer />}
           {activeTab === 'monitor' && <TransactionMonitor />}
+          {activeTab === 'whyme' && <WhyMe onNavigate={setActiveTab} />}
         </main>
 
         <StatusBar />

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Activity, Layers, ArrowLeftRight, Search } from 'lucide-react'
+import { Activity, Layers, ArrowLeftRight, Search, Target } from 'lucide-react'
 import type { Tab } from '../types'
 
 interface SidebarProps {
@@ -12,6 +12,7 @@ const navItems: { key: Tab; label: string; icon: typeof Activity }[] = [
   { key: 'bundles', label: 'Bundles', icon: Layers },
   { key: 'swap', label: 'Swap Router', icon: ArrowLeftRight },
   { key: 'monitor', label: 'TX Monitor', icon: Search },
+  { key: 'whyme', label: 'Why Me', icon: Target },
 ]
 
 export default function Sidebar({ activeTab, onTabChange }: SidebarProps) {

@@ -9,6 +9,7 @@ const tabTitles: Record<Tab, string> = {
   bundles: 'Bundle Tracker',
   swap: 'Swap Router',
   monitor: 'TX Monitor',
+  whyme: 'Why Me',
 }
 
 export default function Header({ activeTab }: HeaderProps) {
