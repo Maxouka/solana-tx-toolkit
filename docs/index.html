@@ -727,6 +727,23 @@
       transform: translateY(0);
     }
 
+    /* Tour steps */
+    .tour-step {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .tour-step.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .tour-step:hover {
+      background: rgba(153, 69, 255, 0.03);
+      border-radius: 12px;
+    }
+
     /* ============================================
        RESPONSIVE
        ============================================ */
@@ -775,43 +792,130 @@
 
   <!-- ======== HERO ======== -->
   <section class="hero">
+    <div class="recruiter-badge" style="display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:100px;font-size:12px;color:#14F195;background:rgba(20,241,149,0.08);border:1px solid rgba(20,241,149,0.2);margin-bottom:28px;opacity:0;animation:fade-in 0.8s ease 0.1s forwards;letter-spacing:1px;font-weight:600;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      RECRUTEUR ? COMMENCEZ ICI
+    </div>
+
     <h1 class="hero-title">
       <span class="gradient-text">Solana Transaction Infrastructure</span>
     </h1>
 
     <p class="hero-subtitle">
-      A full-stack toolkit for building, optimizing, and monitoring Solana transactions.<br>
-      Built with <span class="accent">Rust</span>, <span class="accent">TypeScript</span>, and the <span class="accent">Anchor</span> framework.
+      Ce projet demontre ma maitrise du stack complet requis pour ce poste :<br>
+      <span class="accent">Rust</span>, <span class="accent">TypeScript</span>, <span class="accent">Anchor</span>, <span class="accent">Jupiter</span>, <span class="accent">Jito</span> et <span class="accent">React</span>.
     </p>
 
-    <div class="solana-badge">
-      <svg viewBox="0 0 397.7 311.7" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M64.6 237.9c2.4-2.4 5.7-3.8 9.2-3.8h317.4c5.8 0 8.7 7 4.6 11.1l-62.7 62.7c-2.4 2.4-5.7 3.8-9.2 3.8H6.5c-5.8 0-8.7-7-4.6-11.1l62.7-62.7z" fill="currentColor"/>
-        <path d="M64.6 3.8C67.1 1.4 70.4 0 73.8 0h317.4c5.8 0 8.7 7 4.6 11.1l-62.7 62.7c-2.4 2.4-5.7 3.8-9.2 3.8H6.5c-5.8 0-8.7-7-4.6-11.1L64.6 3.8z" fill="currentColor"/>
-        <path d="M333.1 120.1c-2.4-2.4-5.7-3.8-9.2-3.8H6.5c-5.8 0-8.7 7-4.6 11.1l62.7 62.7c2.4 2.4 5.7 3.8 9.2 3.8h317.4c5.8 0 8.7-7 4.6-11.1l-62.7-62.7z" fill="currentColor"/>
-      </svg>
-      Built on Solana
+    <div class="hero-cta" style="flex-direction:column;align-items:center;gap:12px;">
+      <a href="./dashboard/#whyme" class="btn btn-primary" style="font-size:16px;padding:16px 40px;background:linear-gradient(135deg,#9945FF,#14F195);letter-spacing:0.5px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+        Pourquoi Moi ?
+      </a>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
+        <a href="./dashboard/" class="btn btn-secondary" style="border-color:rgba(153,69,255,0.4);color:var(--sol-purple);">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Live Dashboard
+        </a>
+        <a href="https://github.com/Maxouka/solana-tx-toolkit" class="btn btn-secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          Code Source
+        </a>
+      </div>
     </div>
 
-    <div class="hero-cta">
-      <a href="./dashboard/" class="btn btn-primary">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-        Live Dashboard
+    <div class="hero-scroll-hint">visite guidee ci-dessous</div>
+  </section>
+
+  <!-- ======== GUIDED TOUR ======== -->
+  <section id="tour" style="padding-top:60px;">
+    <div class="section-header reveal">
+      <div class="section-label">// visite guidee</div>
+      <h2 class="section-title">Ce que ce projet <span class="purple">demontre</span></h2>
+    </div>
+
+    <div class="tour-grid reveal" style="display:grid;grid-template-columns:1fr;gap:0;max-width:800px;margin:0 auto;position:relative;">
+      <!-- Vertical line -->
+      <div style="position:absolute;left:28px;top:28px;bottom:28px;width:2px;background:linear-gradient(to bottom,#9945FF,#14F195);opacity:0.3;border-radius:1px;"></div>
+
+      <a href="./dashboard/" class="tour-step" style="display:grid;grid-template-columns:56px 1fr;gap:20px;align-items:start;padding:24px 0;text-decoration:none;transition:all 0.3s ease;position:relative;cursor:pointer;" onmouseenter="this.querySelector('.tour-num').style.boxShadow='0 0 20px rgba(153,69,255,0.4)'" onmouseleave="this.querySelector('.tour-num').style.boxShadow='none'">
+        <div class="tour-num" style="width:56px;height:56px;border-radius:50%;border:2px solid rgba(153,69,255,0.4);background:rgba(153,69,255,0.08);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:#9945FF;transition:box-shadow 0.3s ease;position:relative;z-index:1;">1</div>
+        <div>
+          <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:4px;">Fee Explorer — Optimisation des Frais</div>
+          <div style="font-size:13px;color:#888;line-height:1.7;margin-bottom:8px;">Estimation dynamique des priority fees avec percentiles (p25/p50/p75/p90). Demontre la comprehension du consensus Solana et de l'optimisation des couts de transaction.</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <span class="feature-tag purple">Rust</span>
+            <span class="feature-tag">Solana RPC</span>
+            <span class="feature-tag">Recharts</span>
+          </div>
+        </div>
       </a>
-      <a href="https://github.com/Maxouka/solana-tx-toolkit" class="btn btn-secondary">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-        View Source
+
+      <a href="./dashboard/" class="tour-step" style="display:grid;grid-template-columns:56px 1fr;gap:20px;align-items:start;padding:24px 0;text-decoration:none;transition:all 0.3s ease;position:relative;cursor:pointer;" onmouseenter="this.querySelector('.tour-num').style.boxShadow='0 0 20px rgba(20,241,149,0.4)'" onmouseleave="this.querySelector('.tour-num').style.boxShadow='none'">
+        <div class="tour-num" style="width:56px;height:56px;border-radius:50%;border:2px solid rgba(20,241,149,0.4);background:rgba(20,241,149,0.08);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:#14F195;transition:box-shadow 0.3s ease;position:relative;z-index:1;">2</div>
+        <div>
+          <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:4px;">Bundle Tracker — Infrastructure Jito MEV</div>
+          <div style="font-size:13px;color:#888;line-height:1.7;margin-bottom:8px;">Construction de bundles atomiques avec gestion des tips, retry logic et suivi de statut. Demontre la maitrise du SDK Jito et de la protection MEV.</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <span class="feature-tag purple">Rust</span>
+            <span class="feature-tag">Jito SDK</span>
+            <span class="feature-tag">Bundles</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="./dashboard/" class="tour-step" style="display:grid;grid-template-columns:56px 1fr;gap:20px;align-items:start;padding:24px 0;text-decoration:none;transition:all 0.3s ease;position:relative;cursor:pointer;" onmouseenter="this.querySelector('.tour-num').style.boxShadow='0 0 20px rgba(153,69,255,0.4)'" onmouseleave="this.querySelector('.tour-num').style.boxShadow='none'">
+        <div class="tour-num" style="width:56px;height:56px;border-radius:50%;border:2px solid rgba(153,69,255,0.4);background:rgba(153,69,255,0.08);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:#9945FF;transition:box-shadow 0.3s ease;position:relative;z-index:1;">3</div>
+        <div>
+          <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:4px;">Swap Router — Aggregation Jupiter V6</div>
+          <div style="font-size:13px;color:#888;line-height:1.7;margin-bottom:8px;">Optimisation de routes multi-hop avec controle du slippage et comparaison de routes. Demontre l'integration Jupiter et la comprehension des DEX Solana.</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <span class="feature-tag">TypeScript</span>
+            <span class="feature-tag">Jupiter V6</span>
+            <span class="feature-tag">SPL Token</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="./dashboard/" class="tour-step" style="display:grid;grid-template-columns:56px 1fr;gap:20px;align-items:start;padding:24px 0;text-decoration:none;transition:all 0.3s ease;position:relative;cursor:pointer;" onmouseenter="this.querySelector('.tour-num').style.boxShadow='0 0 20px rgba(20,241,149,0.4)'" onmouseleave="this.querySelector('.tour-num').style.boxShadow='none'">
+        <div class="tour-num" style="width:56px;height:56px;border-radius:50%;border:2px solid rgba(20,241,149,0.4);background:rgba(20,241,149,0.08);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:#14F195;transition:box-shadow 0.3s ease;position:relative;z-index:1;">4</div>
+        <div>
+          <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:4px;">TX Monitor — Suivi Temps Reel</div>
+          <div style="font-size:13px;color:#888;line-height:1.7;margin-bottom:8px;">Tracking de transactions avec WebSocket et polling fallback. Architecture event-driven avec progression de statut en temps reel.</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <span class="feature-tag">TypeScript</span>
+            <span class="feature-tag">WebSocket</span>
+            <span class="feature-tag">React</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="https://github.com/Maxouka/solana-tx-toolkit/tree/master/programs/tx-vault" class="tour-step" style="display:grid;grid-template-columns:56px 1fr;gap:20px;align-items:start;padding:24px 0;text-decoration:none;transition:all 0.3s ease;position:relative;cursor:pointer;" onmouseenter="this.querySelector('.tour-num').style.boxShadow='0 0 20px rgba(153,69,255,0.4)'" onmouseleave="this.querySelector('.tour-num').style.boxShadow='none'">
+        <div class="tour-num" style="width:56px;height:56px;border-radius:50%;border:2px solid rgba(153,69,255,0.4);background:rgba(153,69,255,0.08);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:#9945FF;transition:box-shadow 0.3s ease;position:relative;z-index:1;">5</div>
+        <div>
+          <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:4px;">Programme Anchor — Smart Contract On-Chain</div>
+          <div style="font-size:13px;color:#888;line-height:1.7;margin-bottom:8px;">Programme tx-vault avec 4 instructions, derivation de PDAs, CPI vers System Program, events et erreurs custom. Demontre la maitrise d'Anchor et du developpement on-chain.</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <span class="feature-tag purple">Rust</span>
+            <span class="feature-tag purple">Anchor</span>
+            <span class="feature-tag">PDAs / CPI</span>
+          </div>
+        </div>
       </a>
     </div>
 
-    <div class="hero-scroll-hint">scroll to explore</div>
+    <!-- Big CTA after tour -->
+    <div class="reveal" style="text-align:center;margin-top:48px;">
+      <a href="./dashboard/#whyme" class="btn btn-primary" style="font-size:15px;padding:14px 36px;background:linear-gradient(135deg,#9945FF,#7B2FD4);">
+        Voir le recapitulatif complet &rarr;
+      </a>
+    </div>
   </section>
 
   <!-- ======== FEATURES ======== -->
   <section id="features">
     <div class="section-header reveal">
-      <div class="section-label">// features</div>
-      <h2 class="section-title">What's in the <span class="green">toolkit</span>?</h2>
+      <div class="section-label">// fonctionnalites</div>
+      <h2 class="section-title">Dans le <span class="green">toolkit</span></h2>
     </div>
 
     <div class="features-grid">
@@ -868,15 +972,15 @@
   <!-- ======== SKILLS DEMONSTRATED ======== -->
   <section class="skills-section">
     <div class="section-header reveal">
-      <div class="section-label">// competencies</div>
-      <h2 class="section-title">Skills <span class="purple">Demonstrated</span></h2>
+      <div class="section-label">// competences</div>
+      <h2 class="section-title">Competences <span class="purple">Demontrees</span></h2>
     </div>
 
     <div class="skills-grid reveal">
       <div class="skill-row skill-row-header">
-        <div class="skill-cell">Skill</div>
-        <div class="skill-cell">Evidence</div>
-        <div class="skill-cell">Relevance</div>
+        <div class="skill-cell">Competence</div>
+        <div class="skill-cell">Preuve</div>
+        <div class="skill-cell">Pertinence</div>
       </div>
       <div class="skill-row">
         <div class="skill-cell">Rust backend development</div>
@@ -920,7 +1024,7 @@
   <section id="architecture">
     <div class="section-header reveal">
       <div class="section-label">// architecture</div>
-      <h2 class="section-title">System <span class="green">Architecture</span></h2>
+      <h2 class="section-title"><span class="green">Architecture</span> du Systeme</h2>
     </div>
 
     <div class="arch-container">
@@ -991,7 +1095,7 @@
   <section>
     <div class="section-header reveal">
       <div class="section-label">// stack</div>
-      <h2 class="section-title">Built <span class="purple">With</span></h2>
+      <h2 class="section-title">Construit <span class="purple">Avec</span></h2>
     </div>
 
     <div class="tech-badges reveal">
@@ -1038,7 +1142,7 @@
   <section class="terminal-section">
     <div class="section-header reveal">
       <div class="section-label">// live</div>
-      <h2 class="section-title">Transaction <span class="green">Log</span></h2>
+      <h2 class="section-title">Log de <span class="green">Transactions</span></h2>
     </div>
 
     <div class="terminal reveal">
@@ -1061,12 +1165,12 @@
      ========================================== -->
 <footer>
   <div class="footer-links">
-    <a href="https://github.com/Maxouka/solana-tx-toolkit">GitHub</a>
-    <a href="https://github.com/Maxouka/solana-tx-toolkit#readme">Documentation</a>
+    <a href="./dashboard/#whyme">Pourquoi Moi</a>
     <a href="./dashboard/">Dashboard</a>
+    <a href="https://github.com/Maxouka/solana-tx-toolkit">GitHub</a>
   </div>
   <div class="footer-built">
-    Built with <span class="rust-color">Rust</span> and <span class="ts-color">TypeScript</span>
+    Construit avec <span class="rust-color">Rust</span> et <span class="ts-color">TypeScript</span>
   </div>
   <div class="footer-name">Solana Transaction Optimization Toolkit</div>
 </footer>
@@ -1203,7 +1307,7 @@
   /* ============================================
      SCROLL REVEAL
      ============================================ */
-  var revealEls = document.querySelectorAll('.reveal, .feature-card, .arch-layer');
+  var revealEls = document.querySelectorAll('.reveal, .feature-card, .arch-layer, .tour-step');
 
   var observer = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
@@ -1229,6 +1333,14 @@
   var archLayers = document.querySelectorAll('.arch-layer');
   archLayers.forEach(function (layer, i) {
     layer.style.transitionDelay = (i * 0.1) + 's';
+  });
+
+  /* ============================================
+     TOUR STEPS STAGGER
+     ============================================ */
+  var tourSteps = document.querySelectorAll('.tour-step');
+  tourSteps.forEach(function (step, i) {
+    step.style.transitionDelay = (i * 0.12) + 's';
   });
 
   /* ============================================
