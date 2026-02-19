@@ -26,87 +26,87 @@ interface SkillCard {
 
 const skills: SkillCard[] = [
   {
-    skill: 'Rust Backend Development',
+    skill: 'Rust Backend',
     icon: Code2,
     accent: 'purple',
     evidence: [
-      'tx-optimizer crate: async Rust with Tokio runtime',
-      'Custom retry logic, exponential backoff, error handling',
-      'Modular architecture with clean trait boundaries',
+      'Crate tx-optimizer : Rust async avec Tokio runtime',
+      'Retry logic, exponential backoff, gestion d\'erreurs',
+      'Architecture modulaire avec des trait boundaries cleans',
     ],
     link: {
-      label: 'View on GitHub',
+      label: 'Voir sur GitHub',
       href: 'https://github.com/Maxouka/solana-tx-toolkit/tree/master/crates/tx-optimizer',
     },
   },
   {
-    skill: 'Solana Transaction Optimization',
+    skill: 'Optimisation de Transactions Solana',
     icon: Cpu,
     accent: 'green',
     evidence: [
-      'Priority fee estimation across p25/p50/p75/p90 percentiles',
-      'Compute budget optimization and transaction simulation',
-      'Configurable fee strategies (economy to turbo)',
+      'Estimation des priority fees par percentiles (p25/p50/p75/p90)',
+      'Optimisation du compute budget et simulation de transactions',
+      'Strategies de fees configurables (economy a turbo)',
     ],
-    link: { label: 'See Fee Explorer', tab: 'fees' as Tab },
+    link: { label: 'Voir Fee Explorer', tab: 'fees' as Tab },
   },
   {
-    skill: 'SDKs: web3.js, Jupiter, SPL, Jito',
+    skill: 'SDKs : web3.js, Jupiter, SPL, Jito',
     icon: Package,
     accent: 'purple',
     evidence: [
-      'TypeScript SDK wrapping all four Solana SDKs',
-      'Jupiter V6 multi-hop route optimization with slippage control',
-      'Jito bundle construction with tip accounts and status tracking',
+      'SDK TypeScript integrant les 4 SDKs Solana',
+      'Optimisation de routes Jupiter V6 multi-hop avec slippage',
+      'Construction de bundles Jito avec tip accounts et suivi de statut',
     ],
-    link: { label: 'See Swap Router', tab: 'swap' as Tab },
+    link: { label: 'Voir Swap Router', tab: 'swap' as Tab },
   },
   {
-    skill: 'On-Chain Programs (Anchor)',
+    skill: 'Programmes On-Chain (Anchor)',
     icon: Landmark,
     accent: 'green',
     evidence: [
-      'tx-vault: 4 instructions (init, deposit, batch execute, close)',
-      'PDA derivation, CPI to System Program, account validation',
-      'Custom errors, events, and Anchor account macros',
+      'tx-vault : 4 instructions (init, deposit, batch execute, close)',
+      'Derivation de PDAs, CPI vers System Program, validation de comptes',
+      'Erreurs custom, events et macros Anchor',
     ],
     link: {
-      label: 'View on GitHub',
+      label: 'Voir sur GitHub',
       href: 'https://github.com/Maxouka/solana-tx-toolkit/tree/master/programs/tx-vault',
     },
   },
   {
-    skill: 'React Dashboard',
+    skill: 'Dashboard React',
     icon: LayoutDashboard,
     accent: 'purple',
     evidence: [
-      'This dashboard: Vite + React 18 + TailwindCSS + Recharts',
-      '20+ components with real-time data viz and animations',
-      'Responsive layout, dark theme, production build pipeline',
+      'Ce dashboard : Vite + React 18 + TailwindCSS + Recharts',
+      '20+ composants avec data viz temps reel et animations',
+      'Layout responsive, dark theme, pipeline de build production',
     ],
-    link: { label: 'See Bundle Tracker', tab: 'bundles' as Tab },
+    link: { label: 'Voir Bundle Tracker', tab: 'bundles' as Tab },
   },
   {
     skill: 'PostgreSQL',
     icon: Database,
     accent: 'green',
     evidence: [
-      'Schema designed for tx history, fee snapshots, and bundle logs',
-      'Architecture layer ready for persistence integration',
-      'Not deployed here — static demo, but schema is production-modeled',
+      'Schema concu pour historique tx, snapshots de fees et logs de bundles',
+      'Couche architecture prete pour integration persistence',
+      'Demo statique ici, mais le schema est production-ready',
     ],
   },
   {
-    skill: 'Git Workflow',
+    skill: 'Workflow Git',
     icon: GitBranch,
     accent: 'purple',
     evidence: [
-      'Clean commit history with conventional commit messages',
-      'Monorepo structure: Rust workspace + TS + React + Anchor',
-      'GitHub Pages CI/CD deployment from docs/ folder',
+      'Historique de commits clean avec conventional commits',
+      'Monorepo : Rust workspace + TS + React + Anchor',
+      'Deploiement GitHub Pages CI/CD depuis le dossier docs/',
     ],
     link: {
-      label: 'View Commits',
+      label: 'Voir les Commits',
       href: 'https://github.com/Maxouka/solana-tx-toolkit/commits/master',
     },
   },
@@ -114,27 +114,28 @@ const skills: SkillCard[] = [
 
 export default function WhyMe({ onNavigate }: WhyMeProps) {
   const total = skills.length
-  const covered = total // all covered
+  const covered = total
 
   return (
-    <div className="flex flex-col gap-6 h-full">
-      {/* Hero */}
-      <div className="relative overflow-hidden rounded-2xl border border-sol-border bg-gradient-to-br from-sol-card via-sol-card to-sol-purple/5 p-6">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-sol-purple/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+    <div className="flex flex-col gap-6">
+      {/* Big title */}
+      <div className="relative pt-2 pb-4">
+        <div className="absolute top-0 left-0 w-96 h-40 bg-sol-purple/8 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-4 right-12 w-64 h-32 bg-sol-green/5 rounded-full blur-3xl pointer-events-none" />
         <div className="relative">
-          <h1 className="text-2xl font-bold text-white tracking-tight">
-            What This Project Demonstrates
+          <h1 className="text-5xl font-black text-white tracking-tight uppercase">
+            Pourquoi <span className="text-sol-purple">Moi</span>
           </h1>
-          <p className="mt-2 text-sm text-gray-400 max-w-2xl leading-relaxed">
-            Every component of this toolkit was built to demonstrate the exact
-            technical skills required for this role. Each card below maps a job
-            requirement to concrete, working code you can explore.
+          <p className="mt-3 text-sm text-gray-400 max-w-2xl leading-relaxed">
+            Chaque composant de ce toolkit a ete construit pour demontrer les competences
+            techniques exactes requises pour ce poste. Chaque carte ci-dessous associe
+            une exigence du poste a du code fonctionnel que vous pouvez explorer.
           </p>
         </div>
       </div>
 
       {/* Skills grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-1">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {skills.map((card, i) => (
           <SkillCardComponent key={card.skill} card={card} index={i} onNavigate={onNavigate} />
         ))}
@@ -145,7 +146,7 @@ export default function WhyMe({ onNavigate }: WhyMeProps) {
         <div className="flex items-center gap-2">
           <CheckCircle2 size={18} className="text-sol-green" />
           <span className="text-sm font-semibold text-white">
-            {covered}/{total} requirements covered
+            {covered}/{total} exigences couvertes
           </span>
         </div>
         <div className="flex-1 h-2 bg-sol-dark rounded-full overflow-hidden">
@@ -162,7 +163,6 @@ export default function WhyMe({ onNavigate }: WhyMeProps) {
 
 function SkillCardComponent({
   card,
-  index,
   onNavigate,
 }: {
   card: SkillCard
@@ -204,9 +204,8 @@ function SkillCardComponent({
 
   return (
     <div
-      className="group relative bg-sol-card/60 backdrop-blur-sm rounded-xl border border-sol-border hover:border-opacity-60 transition-all duration-300 overflow-hidden"
+      className="group relative bg-sol-card/60 backdrop-blur-sm rounded-xl border border-sol-border hover:border-opacity-60 transition-all duration-300"
       style={{
-        animationDelay: `${index * 80}ms`,
         borderLeftWidth: '3px',
         borderLeftColor: styles.borderColor,
         boxShadow: `inset 3px 0 12px -4px ${styles.glow}`,
@@ -226,7 +225,7 @@ function SkillCardComponent({
                 {card.skill}
               </h3>
               <span className={`text-[10px] font-semibold uppercase tracking-widest ${styles.tag}`}>
-                Required
+                Requis
               </span>
             </div>
           </div>

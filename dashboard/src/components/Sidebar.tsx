@@ -12,7 +12,7 @@ const navItems: { key: Tab; label: string; icon: typeof Activity }[] = [
   { key: 'bundles', label: 'Bundles', icon: Layers },
   { key: 'swap', label: 'Swap Router', icon: ArrowLeftRight },
   { key: 'monitor', label: 'TX Monitor', icon: Search },
-  { key: 'whyme', label: 'Why Me', icon: Target },
+  { key: 'whyme', label: 'Pourquoi Moi', icon: Target },
 ]
 
 export default function Sidebar({ activeTab, onTabChange }: SidebarProps) {
