@@ -7,4 +7,4 @@ version = "0.1.0"
 edition = "2021"
 authors = ["launo"]
 license = "MIT"
-repository = "https://github.com/launo/solana-tx-toolkit"
+repository = "https://github.com/Maxouka/solana-tx-toolkit"
