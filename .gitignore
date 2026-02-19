@@ -40,6 +40,11 @@ Thumbs.db
 # Claude
 .claude/
 claude.md
+CLAUDE.md
+
+# Dev artifacts
+tasks/
+docs/plans/
 
 # Logs
 *.log
