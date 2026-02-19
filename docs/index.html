@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>solana-tx-toolkit | Transaction Optimization for Degens</title>
+  <meta name="description" content="High-performance Solana transaction toolkit. Priority fees, Jito bundles, Jupiter routing, real-time monitoring. Built by a degen, for degens.">
+  <style>
+    /* ============================================
+       CSS RESET & BASE
+       ============================================ */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --sol-purple: #9945FF;
+      --sol-green: #14F195;
+      --sol-green-dim: rgba(20, 241, 149, 0.15);
+      --sol-purple-dim: rgba(153, 69, 255, 0.15);
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #111111;
+      --bg-card: #1a1a2e;
+      --bg-terminal: #0d1117;
+      --text-primary: #e0e0e0;
+      --text-muted: #888;
+      --text-dim: #555;
+      --border-color: #222;
+      --glow-green: 0 0 20px rgba(20, 241, 149, 0.3);
+      --glow-purple: 0 0 20px rgba(153, 69, 255, 0.3);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', 'JetBrains Mono', 'Consolas', monospace;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* ============================================
+       SCROLLBAR
+       ============================================ */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb {
+      background: var(--sol-purple);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: var(--sol-green); }
+
+    /* ============================================
+       CANVAS BACKGROUND (Matrix Rain)
+       ============================================ */
+    #matrix-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.07;
+    }
+
+    /* ============================================
+       TICKER BAR
+       ============================================ */
+    .ticker-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 36px;
+      background: linear-gradient(90deg, var(--bg-secondary), #16162a, var(--bg-secondary));
+      border-bottom: 1px solid var(--border-color);
+      z-index: 1000;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+
+    .ticker-track {
+      display: flex;
+      animation: ticker-scroll 30s linear infinite;
+      white-space: nowrap;
+    }
+
+    .ticker-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 24px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .ticker-item .ticker-symbol { color: var(--sol-green); font-weight: 700; }
+    .ticker-item .ticker-up { color: #14F195; }
+    .ticker-item .ticker-down { color: #ff4444; }
+
+    @keyframes ticker-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ============================================
+       MAIN CONTENT WRAPPER
+       ============================================ */
+    .content-wrapper {
+      position: relative;
+      z-index: 1;
+      margin-top: 36px;
+    }
+
+    section {
+      padding: 80px 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* ============================================
+       GM FLOATING TEXT
+       ============================================ */
+    .gm-float {
+      position: fixed;
+      top: 60px;
+      right: 30px;
+      font-size: 14px;
+      color: var(--sol-green);
+      opacity: 0;
+      animation: gm-fade 4s ease-in-out 1s forwards;
+      z-index: 100;
+      text-shadow: var(--glow-green);
+    }
+
+    @keyframes gm-fade {
+      0% { opacity: 0; transform: translateY(10px); }
+      20% { opacity: 1; transform: translateY(0); }
+      80% { opacity: 1; }
+      100% { opacity: 0.4; }
+    }
+
+    /* ============================================
+       HERO SECTION
+       ============================================ */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding-top: 60px;
+    }
+
+    .hero-gm {
+      font-size: clamp(16px, 3vw, 22px);
+      color: var(--sol-green);
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fade-in 1s ease 0.5s forwards;
+      text-shadow: var(--glow-green);
+    }
+
+    .hero-title {
+      font-size: clamp(32px, 7vw, 72px);
+      font-weight: 900;
+      letter-spacing: -1px;
+      position: relative;
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+
+    .hero-title .glitch-text {
+      position: relative;
+      display: inline-block;
+      color: #fff;
+    }
+
+    .hero-title .glitch-text::before,
+    .hero-title .glitch-text::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .hero-title .glitch-text::before {
+      color: var(--sol-purple);
+      animation: glitch-1 3s infinite linear alternate-reverse;
+      clip-path: inset(0 0 65% 0);
+    }
+
+    .hero-title .glitch-text::after {
+      color: var(--sol-green);
+      animation: glitch-2 3s infinite linear alternate-reverse;
+      clip-path: inset(65% 0 0 0);
+    }
+
+    @keyframes glitch-1 {
+      0%, 93% { transform: translateX(0); }
+      94% { transform: translateX(-4px) skewX(-1deg); }
+      95% { transform: translateX(3px) skewX(1deg); }
+      96% { transform: translateX(-2px); }
+      97% { transform: translateX(4px) skewX(-0.5deg); }
+      98% { transform: translateX(-1px); }
+      99% { transform: translateX(2px) skewX(0.5deg); }
+      100% { transform: translateX(0); }
+    }
+
+    @keyframes glitch-2 {
+      0%, 93% { transform: translateX(0); }
+      94% { transform: translateX(3px) skewX(1deg); }
+      95% { transform: translateX(-4px) skewX(-1deg); }
+      96% { transform: translateX(2px); }
+      97% { transform: translateX(-3px) skewX(0.5deg); }
+      98% { transform: translateX(1px); }
+      99% { transform: translateX(-2px) skewX(-0.5deg); }
+      100% { transform: translateX(0); }
+    }
+
+    .hero-subtitle {
+      font-size: clamp(14px, 2.5vw, 20px);
+      color: var(--text-muted);
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fade-in 1s ease 1s forwards;
+    }
+
+    .hero-subtitle .accent { color: var(--sol-green); }
+    .hero-subtitle .frog { font-size: 1.2em; }
+
+    .solana-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 20px;
+      border: 1px solid var(--sol-purple);
+      border-radius: 100px;
+      font-size: 13px;
+      color: var(--sol-purple);
+      background: var(--sol-purple-dim);
+      opacity: 0;
+      animation: fade-in 1s ease 1.5s forwards;
+      transition: all 0.3s ease;
+    }
+
+    .solana-badge:hover {
+      box-shadow: var(--glow-purple);
+      background: rgba(153, 69, 255, 0.25);
+    }
+
+    .solana-badge svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .hero-cta {
+      margin-top: 40px;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+      opacity: 0;
+      animation: fade-in 1s ease 2s forwards;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--sol-purple), #7B2FD4);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      box-shadow: var(--glow-purple);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--sol-green);
+      border: 1px solid var(--sol-green);
+    }
+
+    .btn-secondary:hover {
+      background: var(--sol-green-dim);
+      box-shadow: var(--glow-green);
+      transform: translateY(-2px);
+    }
+
+    .hero-scroll-hint {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--text-dim);
+      font-size: 12px;
+      animation: bounce 2s ease infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(8px); }
+    }
+
+    @keyframes fade-in {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================================
+       SECTION TITLES
+       ============================================ */
+    .section-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .section-label {
+      font-size: 12px;
+      color: var(--sol-green);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(24px, 4vw, 40px);
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .section-title .purple { color: var(--sol-purple); }
+    .section-title .green { color: var(--sol-green); }
+
+    /* ============================================
+       FEATURES SECTION
+       ============================================ */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s ease;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .feature-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--sol-purple), var(--sol-green));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .feature-card:hover {
+      border-color: var(--sol-purple);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px rgba(153, 69, 255, 0.1);
+    }
+
+    .feature-card:hover::before { opacity: 1; }
+
+    .feature-icon {
+      font-size: 28px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .feature-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .feature-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    .feature-tag {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      background: var(--sol-green-dim);
+      color: var(--sol-green);
+      border: 1px solid rgba(20, 241, 149, 0.2);
+    }
+
+    /* ============================================
+       LIVE STATS SECTION
+       ============================================ */
+    .stats-section {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+
+    .stat-card {
+      text-align: center;
+      padding: 24px 16px;
+      border-radius: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+    }
+
+    .stat-value {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--sol-green), var(--sol-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Terminal log */
+    .terminal {
+      background: var(--bg-terminal);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+      font-size: 12px;
+    }
+
+    .terminal-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .terminal-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .terminal-dot.red { background: #ff5f57; }
+    .terminal-dot.yellow { background: #febc2e; }
+    .terminal-dot.green { background: #28c840; }
+
+    .terminal-title {
+      margin-left: 8px;
+      color: var(--text-dim);
+      font-size: 11px;
+    }
+
+    .terminal-body {
+      padding: 16px;
+      height: 220px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .terminal-body::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 40px;
+      background: linear-gradient(transparent, var(--bg-terminal));
+    }
+
+    .log-line {
+      padding: 2px 0;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .log-line .timestamp { color: var(--text-dim); }
+    .log-line .status-ok { color: var(--sol-green); }
+    .log-line .status-info { color: var(--sol-purple); }
+    .log-line .status-warn { color: #febc2e; }
+
+    /* ============================================
+       TECH STACK SECTION
+       ============================================ */
+    .tech-badges {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .tech-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      transition: all 0.3s ease;
+      cursor: default;
+    }
+
+    .tech-badge:hover {
+      transform: translateY(-2px);
+    }
+
+    .tech-badge.rust { border-color: #dea584; color: #dea584; }
+    .tech-badge.rust:hover { box-shadow: 0 0 20px rgba(222, 165, 132, 0.25); background: rgba(222, 165, 132, 0.1); }
+    .tech-badge.typescript { border-color: #3178c6; color: #3178c6; }
+    .tech-badge.typescript:hover { box-shadow: 0 0 20px rgba(49, 120, 198, 0.25); background: rgba(49, 120, 198, 0.1); }
+    .tech-badge.solana { border-color: var(--sol-purple); color: var(--sol-purple); }
+    .tech-badge.solana:hover { box-shadow: var(--glow-purple); background: var(--sol-purple-dim); }
+    .tech-badge.anchor { border-color: #5C7CFA; color: #5C7CFA; }
+    .tech-badge.anchor:hover { box-shadow: 0 0 20px rgba(92, 124, 250, 0.25); background: rgba(92, 124, 250, 0.1); }
+    .tech-badge.jupiter { border-color: #c7f284; color: #c7f284; }
+    .tech-badge.jupiter:hover { box-shadow: 0 0 20px rgba(199, 242, 132, 0.25); background: rgba(199, 242, 132, 0.1); }
+    .tech-badge.jito { border-color: var(--sol-green); color: var(--sol-green); }
+    .tech-badge.jito:hover { box-shadow: var(--glow-green); background: var(--sol-green-dim); }
+
+    /* ============================================
+       "BUILT DIFFERENT" MEME SECTION
+       ============================================ */
+    .meme-section {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .meme-comparison {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 24px;
+      align-items: stretch;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .meme-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 28px;
+    }
+
+    .meme-card-title {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .meme-card-title strong { color: #fff; }
+
+    .meme-steps {
+      list-style: none;
+      font-size: 13px;
+    }
+
+    .meme-steps li {
+      padding: 6px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .meme-card.virgin .meme-steps li { color: var(--text-muted); }
+    .meme-card.chad .meme-steps li { color: var(--sol-green); }
+
+    .meme-vs {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--text-dim);
+    }
+
+    .meme-pepe {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.3;
+    }
+
+    .meme-pepe pre {
+      display: inline-block;
+      text-align: left;
+      color: var(--sol-green);
+      font-size: 10px;
+      line-height: 1.15;
+      margin-bottom: 12px;
+      opacity: 0.6;
+    }
+
+    /* ============================================
+       INSTALL SECTION
+       ============================================ */
+    .install-block {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .install-cmd {
+      background: var(--bg-terminal);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px 24px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 24px;
+      cursor: pointer;
+      transition: border-color 0.3s ease;
+    }
+
+    .install-cmd:hover { border-color: var(--sol-green); }
+
+    .install-cmd code {
+      color: var(--sol-green);
+    }
+
+    .install-cmd .copy-btn {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-family: inherit;
+      font-size: 12px;
+      cursor: pointer;
+      transition: color 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .install-cmd .copy-btn:hover { color: var(--sol-green); }
+
+    /* ============================================
+       FOOTER
+       ============================================ */
+    footer {
+      padding: 60px 20px 40px;
+      text-align: center;
+      border-top: 1px solid var(--border-color);
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-pepe {
+      color: var(--sol-green);
+      font-size: 9px;
+      line-height: 1.1;
+      opacity: 0.3;
+      margin-bottom: 24px;
+      transition: opacity 0.3s ease;
+    }
+
+    .footer-pepe:hover { opacity: 0.7; }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 20px;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.3s ease;
+    }
+
+    .footer-links a:hover { color: var(--sol-green); }
+
+    .footer-made {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+
+    .footer-wagmi {
+      font-size: 14px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--sol-green), var(--sol-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ============================================
+       TYPING CURSOR
+       ============================================ */
+    .typing-cursor::after {
+      content: '|';
+      animation: cursor-blink 0.8s step-end infinite;
+      color: var(--sol-green);
+    }
+
+    @keyframes cursor-blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* ============================================
+       SCROLL REVEAL (generic)
+       ============================================ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ============================================
+       RESPONSIVE
+       ============================================ */
+    @media (max-width: 768px) {
+      section { padding: 60px 16px; }
+
+      .meme-comparison {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .meme-vs {
+        display: none;
+      }
+
+      .hero-cta { flex-direction: column; align-items: center; }
+      .gm-float { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .features-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ==========================================
+     MATRIX RAIN CANVAS
+     ========================================== -->
+<canvas id="matrix-canvas"></canvas>
+
+<!-- ==========================================
+     GM FLOATING
+     ========================================== -->
+<div class="gm-float">gm anon</div>
+
+<!-- ==========================================
+     TICKER BAR
+     ========================================== -->
+<div class="ticker-bar">
+  <div class="ticker-track" id="ticker-track">
+    <!-- Populated by JS -->
+  </div>
+</div>
+
+<!-- ==========================================
+     MAIN CONTENT
+     ========================================== -->
+<div class="content-wrapper">
+
+  <!-- ======== HERO ======== -->
+  <section class="hero">
+    <div class="hero-gm">$ gm --world</div>
+
+    <h1 class="hero-title">
+      <span class="glitch-text" data-text="solana-tx-toolkit">solana-tx-toolkit</span>
+    </h1>
+
+    <p class="hero-subtitle">
+      Transaction optimization for <span class="accent">degens</span>, by a degen <span class="frog">🐸</span>
+    </p>
+
+    <div class="solana-badge">
+      <svg viewBox="0 0 397.7 311.7" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M64.6 237.9c2.4-2.4 5.7-3.8 9.2-3.8h317.4c5.8 0 8.7 7 4.6 11.1l-62.7 62.7c-2.4 2.4-5.7 3.8-9.2 3.8H6.5c-5.8 0-8.7-7-4.6-11.1l62.7-62.7z" fill="currentColor"/>
+        <path d="M64.6 3.8C67.1 1.4 70.4 0 73.8 0h317.4c5.8 0 8.7 7 4.6 11.1l-62.7 62.7c-2.4 2.4-5.7 3.8-9.2 3.8H6.5c-5.8 0-8.7-7-4.6-11.1L64.6 3.8z" fill="currentColor"/>
+        <path d="M333.1 120.1c-2.4-2.4-5.7-3.8-9.2-3.8H6.5c-5.8 0-8.7 7-4.6 11.1l62.7 62.7c2.4 2.4 5.7 3.8 9.2 3.8h317.4c5.8 0 8.7-7 4.6-11.1l-62.7-62.7z" fill="currentColor"/>
+      </svg>
+      Built on Solana
+    </div>
+
+    <div class="hero-cta">
+      <a href="https://github.com" class="btn btn-primary">View on GitHub</a>
+      <a href="#features" class="btn btn-secondary">Explore Features</a>
+    </div>
+
+    <div class="hero-scroll-hint">scroll down anon</div>
+  </section>
+
+  <!-- ======== FEATURES ======== -->
+  <section id="features">
+    <div class="section-header reveal">
+      <div class="section-label">// features</div>
+      <h2 class="section-title">What's in the <span class="green">toolkit</span>?</h2>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="feature-icon">🔥</span>
+        <div class="feature-title">Priority Fee Optimizer</div>
+        <p class="feature-desc">Stop overpaying gas like a normie. Dynamic fee estimation with p50/p75/p90 percentiles based on real-time network conditions.</p>
+        <span class="feature-tag">save SOL</span>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-icon">⚡</span>
+        <div class="feature-title">Jito Bundle Builder</div>
+        <p class="feature-desc">Bundle or get bundled. MEV-aware transaction submission with tip optimization and bundle status tracking.</p>
+        <span class="feature-tag">MEV protection</span>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-icon">🪐</span>
+        <div class="feature-title">Jupiter Route Optimizer</div>
+        <p class="feature-desc">Best routes, best rates. Integrated Jupiter v6 aggregation with slippage protection and split routing.</p>
+        <span class="feature-tag">best execution</span>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-icon">🔍</span>
+        <div class="feature-title">Transaction Monitor</div>
+        <p class="feature-desc">Track every tx like a hawk. WebSocket-based real-time monitoring with confirmation callbacks and retry logic.</p>
+        <span class="feature-tag">real-time</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======== LIVE STATS ======== -->
+  <section class="stats-section">
+    <div class="section-header reveal">
+      <div class="section-label">// live stats</div>
+      <h2 class="section-title">Numbers go <span class="green">up</span> 🚀</h2>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card reveal">
+        <div class="stat-value" data-target="420069" data-prefix="" data-suffix="">0</div>
+        <div class="stat-label">txs optimized</div>
+      </div>
+      <div class="stat-card reveal">
+        <div class="stat-value" data-target="6942" data-prefix="" data-suffix="" data-decimal="true">0</div>
+        <div class="stat-label">SOL saved</div>
+      </div>
+      <div class="stat-card reveal">
+        <div class="stat-value" data-target="1337" data-prefix="" data-suffix="">0</div>
+        <div class="stat-label">bundles landed</div>
+      </div>
+      <div class="stat-card reveal">
+        <div class="stat-value" data-target="9999" data-prefix="" data-suffix="%" data-percent="true">0</div>
+        <div class="stat-label">uptime</div>
+      </div>
+    </div>
+
+    <!-- TERMINAL LOG -->
+    <div class="terminal reveal">
+      <div class="terminal-header">
+        <span class="terminal-dot red"></span>
+        <span class="terminal-dot yellow"></span>
+        <span class="terminal-dot green"></span>
+        <span class="terminal-title">tx-monitor.log</span>
+      </div>
+      <div class="terminal-body" id="terminal-body">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ======== TECH STACK ======== -->
+  <section>
+    <div class="section-header reveal">
+      <div class="section-label">// stack</div>
+      <h2 class="section-title">Built with <span class="purple">real</span> tools</h2>
+    </div>
+
+    <div class="tech-badges reveal">
+      <span class="tech-badge rust">🦀 Rust</span>
+      <span class="tech-badge typescript">TS TypeScript</span>
+      <span class="tech-badge solana">◎ Solana</span>
+      <span class="tech-badge anchor">⚓ Anchor</span>
+      <span class="tech-badge jupiter">🪐 Jupiter</span>
+      <span class="tech-badge jito">⚡ Jito</span>
+    </div>
+  </section>
+
+  <!-- ======== BUILT DIFFERENT ======== -->
+  <section class="meme-section">
+    <div class="section-header reveal">
+      <div class="section-label">// philosophy</div>
+      <h2 class="section-title">Built <span class="green">different</span> 💎</h2>
+    </div>
+
+    <div class="meme-comparison reveal">
+      <div class="meme-card virgin">
+        <div class="meme-card-title"><strong>Average developer</strong></div>
+        <ul class="meme-steps">
+          <li>📖 Read docs for 3 hours</li>
+          <li>☕ Coffee break #4</li>
+          <li>💻 Write 10 lines of code</li>
+          <li>🐛 Debug for 6 hours</li>
+          <li>🙏 Pray to the compiler gods</li>
+          <li>😴 Give up, go to bed</li>
+        </ul>
+      </div>
+
+      <div class="meme-vs">VS</div>
+
+      <div class="meme-card chad">
+        <div class="meme-card-title"><strong>This dev</strong> 🐸</div>
+        <ul class="meme-steps">
+          <li>🌅 GM</li>
+          <li>🤖 Open Claude Code</li>
+          <li>⚡ Ship production code</li>
+          <li>📈 Numbers go up</li>
+          <li>🚀 Deploy to mainnet</li>
+          <li>🌙 GN, WAGMI</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="meme-pepe reveal">
+      <pre>
+    ⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣤⣤⣤⣀⡀⠀⠀⠀⠀⠀
+    ⠀⠀⠀⠀⠀⣠⡾⠛⠉⠀⠀⠀⠀⠉⠛⢷⣄⠀⠀⠀
+    ⠀⠀⠀⢀⡾⠋⠀⠀⣠⣤⣤⣤⣄⠀⠀⠀⠙⢷⡀⠀
+    ⠀⠀⢠⡿⠀⠀⠀⣼⣿⣿⣿⣿⣿⣧⠀⠀⠀⠘⣷⠀
+    ⠀⢀⣿⠁⢀⣤⣾⣿⣿⣿⣿⣿⣿⣿⣷⣤⡀⠀⣿⡀
+    ⠀⢸⡇⠀⣾⣿⣿⠟⠋⠉⠉⠙⠻⣿⣿⣿⡇⠀⢹⡇
+    ⠀⢸⡇⠀⣿⡿⠁⢀⣤⣤⣤⡀⠀⠈⢿⣿⡇⠀⢸⡇
+    ⠀⠈⣿⠀⢻⡇⠀⣼⣿⣿⣿⣧⠀⠀⣸⡟⠀⣰⡿⠀
+    ⠀⠀⠹⣧⡀⠻⣦⣈⠻⠿⠟⢁⣠⡾⠋⣠⣾⠟⠀⠀
+    ⠀⠀⠀⠙⢿⣦⣀⠉⠛⠛⠛⠉⢀⣠⣾⠟⠁⠀⠀⠀
+    ⠀⠀⠀⠀⠀⠉⠛⠿⣶⣶⣶⠿⠛⠉⠀⠀⠀⠀⠀⠀</pre>
+      <p>"ser, the code compiles on the first try"</p>
+    </div>
+  </section>
+
+  <!-- ======== INSTALL ======== -->
+  <section>
+    <div class="section-header reveal">
+      <div class="section-label">// get started</div>
+      <h2 class="section-title">LFG <span class="green">anon</span> 🚀</h2>
+    </div>
+
+    <div class="install-block reveal">
+      <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 8px;">Install in one line. Start building in five minutes.</p>
+
+      <div class="install-cmd" onclick="copyInstall(this)">
+        <code>$ cargo add solana-tx-toolkit</code>
+        <button class="copy-btn" aria-label="Copy command">[ copy ]</button>
+      </div>
+
+      <div class="install-cmd" onclick="copyInstall(this)" style="margin-top: 10px;">
+        <code>$ npm i solana-tx-toolkit</code>
+        <button class="copy-btn" aria-label="Copy command">[ copy ]</button>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /content-wrapper -->
+
+<!-- ==========================================
+     FOOTER
+     ========================================== -->
+<footer>
+  <div class="footer-pepe">
+    <pre>
+  ⠀⠀⣠⣾⣿⣿⣿⣷⣄⠀⠀
+  ⠀⣾⣿⣿⣿⣿⣿⣿⣿⣷⠀
+  ⢸⣿⡟⠛⣿⡟⠛⣿⣿⣿⡇
+  ⢸⣿⣇⣀⣿⣇⣀⣿⣿⣿⡇
+  ⠀⠻⣿⣿⣿⣿⣿⣿⣿⠟⠀
+  ⠀⠀⠈⠛⠛⠛⠛⠛⠁⠀⠀</pre>
+  </div>
+
+  <div class="footer-links">
+    <a href="https://github.com">GitHub</a>
+    <a href="https://twitter.com">Twitter</a>
+    <a href="#">Docs</a>
+  </div>
+
+  <div class="footer-made">Made with ☕ and Claude Code</div>
+  <div class="footer-wagmi">WAGMI 🚀</div>
+</footer>
+
+<!-- ==========================================
+     JAVASCRIPT
+     ========================================== -->
+<script>
+(function () {
+  'use strict';
+
+  /* ============================================
+     MATRIX RAIN EFFECT (Canvas)
+     ============================================ */
+  const canvas = document.getElementById('matrix-canvas');
+  const ctx = canvas.getContext('2d');
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  const matrixChars = 'SOLANAJITOJUPITERRUSTアイウエオカキクケコサシスセソ01234567890xABCDEF';
+  const fontSize = 14;
+  let columns = Math.floor(canvas.width / fontSize);
+  let drops = Array(columns).fill(1);
+
+  function drawMatrix() {
+    ctx.fillStyle = 'rgba(10, 10, 10, 0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#14F195';
+    ctx.font = fontSize + 'px monospace';
+
+    for (let i = 0; i < drops.length; i++) {
+      const char = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+      ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+
+      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+        drops[i] = 0;
+      }
+      drops[i]++;
+    }
+  }
+
+  setInterval(drawMatrix, 50);
+
+  window.addEventListener('resize', function () {
+    columns = Math.floor(canvas.width / fontSize);
+    drops = Array(columns).fill(1);
+  });
+
+  /* ============================================
+     TICKER BAR
+     ============================================ */
+  const tickerData = [
+    { symbol: 'SOL', price: '243.87', change: '+5.42%', up: true },
+    { symbol: 'BTC', price: '104,231', change: '+2.11%', up: true },
+    { symbol: 'ETH', price: '3,891', change: '-0.73%', up: false },
+    { symbol: 'JTO', price: '4.20', change: '+13.37%', up: true },
+    { symbol: 'JUP', price: '1.69', change: '+6.90%', up: true },
+    { symbol: 'BONK', price: '0.00004206', change: '+42.0%', up: true },
+    { symbol: 'WIF', price: '3.21', change: '+8.88%', up: true },
+    { symbol: 'RNDR', price: '11.42', change: '-1.23%', up: false },
+    { symbol: 'PYTH', price: '0.89', change: '+3.14%', up: true },
+    { symbol: 'RAY', price: '7.77', change: '+7.77%', up: true },
+    { symbol: 'PEPE', price: '0.00001337', change: '+69.0%', up: true },
+  ];
+
+  function buildTicker() {
+    const track = document.getElementById('ticker-track');
+    let html = '';
+    // Duplicate for seamless scroll
+    for (let r = 0; r < 2; r++) {
+      tickerData.forEach(function (t) {
+        html += '<span class="ticker-item">'
+          + '<span class="ticker-symbol">' + t.symbol + '</span> '
+          + '$' + t.price + ' '
+          + '<span class="' + (t.up ? 'ticker-up' : 'ticker-down') + '">' + t.change + '</span>'
+          + '</span>';
+      });
+    }
+    track.innerHTML = html;
+  }
+
+  buildTicker();
+
+  /* ============================================
+     ANIMATED COUNTERS
+     ============================================ */
+  function animateCounter(el) {
+    const target = parseInt(el.getAttribute('data-target'), 10);
+    const isDecimal = el.hasAttribute('data-decimal');
+    const isPercent = el.hasAttribute('data-percent');
+    const suffix = el.getAttribute('data-suffix') || '';
+    const duration = 2000;
+    const startTime = performance.now();
+
+    function update(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      let current = Math.floor(target * eased);
+
+      if (isDecimal) {
+        el.textContent = (current / 100).toFixed(2) + suffix;
+      } else if (isPercent) {
+        el.textContent = (current / 100).toFixed(2) + suffix;
+      } else {
+        el.textContent = current.toLocaleString('en-US') + suffix;
+      }
+
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      }
+    }
+
+    requestAnimationFrame(update);
+  }
+
+  /* ============================================
+     TERMINAL LOG SIMULATION
+     ============================================ */
+  const logTemplates = [
+    { msg: 'TX confirmed: {hash} | slot {slot} | fee {fee} SOL', status: 'ok' },
+    { msg: 'Bundle landed: {bundle} | tip {tip} lamports', status: 'ok' },
+    { msg: 'Route found: {pair} via {dex} | impact {impact}%', status: 'info' },
+    { msg: 'Priority fee adjusted: p75={p75} microlamports', status: 'info' },
+    { msg: 'WebSocket reconnected to {rpc}', status: 'warn' },
+    { msg: 'Retry #2 for TX {hash} | new fee: {fee} SOL', status: 'warn' },
+    { msg: 'Swap executed: {amount} {token} -> {out} SOL', status: 'ok' },
+    { msg: 'CU budget optimized: {cu} -> {cuOpt} compute units', status: 'info' },
+    { msg: 'Jito tip account rotated: {tip_acc}', status: 'info' },
+    { msg: 'Blockhash refreshed: {blockhash}', status: 'ok' },
+  ];
+
+  function randHex(len) {
+    var s = '';
+    for (var i = 0; i < len; i++) s += '0123456789abcdef'[Math.floor(Math.random() * 16)];
+    return s;
+  }
+
+  function generateLog() {
+    var tpl = logTemplates[Math.floor(Math.random() * logTemplates.length)];
+    var now = new Date();
+    var ts = now.toTimeString().slice(0, 8);
+    var msg = tpl.msg
+      .replace('{hash}', randHex(8) + '...' + randHex(4))
+      .replace('{bundle}', randHex(6))
+      .replace('{slot}', String(310000000 + Math.floor(Math.random() * 999999)))
+      .replace('{fee}', (Math.random() * 0.005).toFixed(6))
+      .replace('{tip}', String(Math.floor(Math.random() * 50000) + 1000))
+      .replace('{pair}', ['SOL/USDC', 'JUP/SOL', 'BONK/SOL', 'WIF/USDC'][Math.floor(Math.random() * 4)])
+      .replace('{dex}', ['Raydium', 'Orca', 'Phoenix', 'Lifinity'][Math.floor(Math.random() * 4)])
+      .replace('{impact}', (Math.random() * 0.5).toFixed(3))
+      .replace('{p75}', String(Math.floor(Math.random() * 50000) + 5000))
+      .replace('{rpc}', ['mainnet-beta', 'helius', 'triton', 'quicknode'][Math.floor(Math.random() * 4)])
+      .replace('{amount}', (Math.random() * 100).toFixed(2))
+      .replace('{token}', ['USDC', 'JUP', 'BONK', 'WIF', 'RAY'][Math.floor(Math.random() * 5)])
+      .replace('{out}', (Math.random() * 10).toFixed(4))
+      .replace('{cu}', String(Math.floor(Math.random() * 200000) + 200000))
+      .replace('{cuOpt}', String(Math.floor(Math.random() * 100000) + 50000))
+      .replace('{tip_acc}', randHex(8))
+      .replace('{blockhash}', randHex(12))
+      .replace('{rpc}', 'wss://mainnet.helius-rpc.com');
+
+    var statusClass = 'status-' + tpl.status;
+    var statusLabel = tpl.status === 'ok' ? ' OK ' : tpl.status === 'info' ? 'INFO' : 'WARN';
+
+    return '<div class="log-line">'
+      + '<span class="timestamp">[' + ts + ']</span> '
+      + '<span class="' + statusClass + '">[' + statusLabel + ']</span> '
+      + msg
+      + '</div>';
+  }
+
+  var terminalBody = document.getElementById('terminal-body');
+
+  // Initial logs
+  for (var i = 0; i < 12; i++) {
+    terminalBody.innerHTML += generateLog();
+  }
+
+  // Keep adding logs
+  setInterval(function () {
+    terminalBody.innerHTML += generateLog();
+    // Keep only last 50 lines
+    var lines = terminalBody.querySelectorAll('.log-line');
+    if (lines.length > 50) {
+      lines[0].remove();
+    }
+    terminalBody.scrollTop = terminalBody.scrollHeight;
+  }, 1500);
+
+  /* ============================================
+     SCROLL REVEAL & COUNTER TRIGGER
+     ============================================ */
+  var revealEls = document.querySelectorAll('.reveal, .feature-card');
+  var statEls = document.querySelectorAll('.stat-value');
+  var statsAnimated = false;
+
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+
+        // Trigger counter animation once
+        if (!statsAnimated && entry.target.classList.contains('stat-card')) {
+          statsAnimated = true;
+          statEls.forEach(function (el) {
+            animateCounter(el);
+          });
+        }
+      }
+    });
+  }, { threshold: 0.15 });
+
+  revealEls.forEach(function (el) { observer.observe(el); });
+
+  /* ============================================
+     FEATURE CARDS STAGGER
+     ============================================ */
+  var featureCards = document.querySelectorAll('.feature-card');
+  featureCards.forEach(function (card, i) {
+    card.style.transitionDelay = (i * 0.12) + 's';
+  });
+
+  /* ============================================
+     COPY INSTALL COMMAND
+     ============================================ */
+  window.copyInstall = function (el) {
+    var code = el.querySelector('code').textContent.replace('$ ', '');
+    navigator.clipboard.writeText(code).then(function () {
+      var btn = el.querySelector('.copy-btn');
+      btn.textContent = '[ copied! ]';
+      btn.style.color = '#14F195';
+      setTimeout(function () {
+        btn.textContent = '[ copy ]';
+        btn.style.color = '';
+      }, 2000);
+    }).catch(function () {
+      // Fallback for file:// protocol
+      var ta = document.createElement('textarea');
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      var btn = el.querySelector('.copy-btn');
+      btn.textContent = '[ copied! ]';
+      btn.style.color = '#14F195';
+      setTimeout(function () {
+        btn.textContent = '[ copy ]';
+        btn.style.color = '';
+      }, 2000);
+    });
+  };
+
+  /* ============================================
+     RANDOM STAT INCREMENTS (fake live data)
+     ============================================ */
+  setInterval(function () {
+    if (!statsAnimated) return;
+    statEls.forEach(function (el) {
+      var target = parseInt(el.getAttribute('data-target'), 10);
+      var isDecimal = el.hasAttribute('data-decimal');
+      var isPercent = el.hasAttribute('data-percent');
+      var suffix = el.getAttribute('data-suffix') || '';
+
+      if (isPercent) return; // Don't increment uptime
+
+      target += Math.floor(Math.random() * 3) + 1;
+      el.setAttribute('data-target', target);
+
+      if (isDecimal) {
+        el.textContent = (target / 100).toFixed(2) + suffix;
+      } else {
+        el.textContent = target.toLocaleString('en-US') + suffix;
+      }
+    });
+  }, 3000);
+
+})();
+</script>
+
+</body>
+</html>
