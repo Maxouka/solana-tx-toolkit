@@ -122,40 +122,36 @@ export default function WhyMe({ onNavigate }: WhyMeProps) {
       <div className="relative pt-2 pb-4">
         <div className="absolute top-0 left-0 w-96 h-40 bg-sol-purple/8 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute top-4 right-12 w-64 h-32 bg-sol-green/5 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative">
-          <div className="flex items-center gap-4 mb-2">
+        <div className="relative flex items-start gap-6">
+          {/* Left: text */}
+          <div className="flex-1 min-w-0">
             <h1 className="text-5xl font-black text-white tracking-tight uppercase">
               GM <span className="text-sol-green">☀️</span>
             </h1>
+            <h2 className="text-3xl font-black text-white tracking-tight uppercase mt-2 mb-3">
+              Pourquoi <span className="text-sol-purple">Moi</span>
+            </h2>
+            <p className="text-sm text-gray-400 max-w-xl leading-relaxed">
+              Chaque composant de ce toolkit a ete construit pour demontrer les competences
+              techniques exactes requises pour ce poste. Pas un exercice scolaire — construit
+              par quelqu'un qui utilise Phantom au quotidien, qui sait que Jito tips c'est
+              pas optionnel, et qui connait la diff entre un rug et un rebase.
+            </p>
           </div>
-          <h2 className="text-3xl font-black text-white tracking-tight uppercase mb-3">
-            Pourquoi <span className="text-sol-purple">Moi</span>
-          </h2>
 
-          {/* Meme row */}
-          <div className="flex items-center gap-4 mb-4">
+          {/* Right: memes big */}
+          <div className="flex items-end gap-4 shrink-0">
             <img
               src={`${import.meta.env.BASE_URL}akrwk8.jpg`}
               alt="Recrutez moi"
-              className="h-28 rounded-lg border border-sol-border shadow-lg"
+              className="h-56 rounded-xl border border-sol-border shadow-lg shadow-sol-purple/10"
             />
             <img
               src={`${import.meta.env.BASE_URL}milady44444.webp`}
               alt="Milady"
-              className="h-24 rounded-lg border border-sol-border shadow-lg"
+              className="h-44 rounded-xl border border-sol-border shadow-lg shadow-sol-green/10"
             />
-            <div className="flex flex-col gap-1">
-              <span className="text-xs text-sol-green font-bold">wagmi ser 🫡</span>
-              <span className="text-[10px] text-gray-500">not my first cycle</span>
-            </div>
           </div>
-
-          <p className="text-sm text-gray-400 max-w-2xl leading-relaxed">
-            Chaque composant de ce toolkit a ete construit pour demontrer les competences
-            techniques exactes requises pour ce poste. Pas un exercice scolaire — construit
-            par quelqu'un qui utilise Phantom au quotidien, qui sait que Jito tips c'est
-            pas optionnel, et qui connait la diff entre un rug et un rebase.
-          </p>
         </div>
       </div>
 

@@ -1,4 +1,4 @@
-# GM 👋
+# GM <img src="milady44444.webp" width="40" />
 
 # Solana TX Toolkit
 
@@ -8,7 +8,6 @@
 
 <p align="center">
   <img src="akrwk8.jpg" width="280" />
-  <img src="milady44444.webp" width="180" />
 </p>
 
 ---
@@ -30,16 +29,6 @@ Ouvrez-le et cliquez sur l'onglet **"Pourquoi Moi"** dans la sidebar. Chaque car
 | Dashboard React | Le dashboard lui-meme — Vite + React 18 + Tailwind + Recharts |
 | PostgreSQL | Schema concu pour historique tx et logs (architecture documentee) |
 | Workflow Git | [Historique de commits](https://github.com/Maxouka/solana-tx-toolkit/commits/master) — monorepo propre, conventional commits |
-
----
-
-## Degen Credentials
-
-Not my first cycle. Je connais la diff entre un rug et un rebase, je sais ce qu'est un MEV sandwich, et j'ai deja mass-claim des airdrops a 3h du mat. Ce toolkit n'est pas un exercice scolaire — c'est construit par quelqu'un qui utilise Phantom/Backpack au quotidien, qui a bridgé sur Wormhole quand ca coutait encore 0 fees, et qui sait que Jito tips c'est pas optionnel si tu veux land un bundle.
-
-- 🫡 WAGMI
-- 🧠 Priority fees > pray and spray
-- 🐸 If you know, you know
 
 ---
 
