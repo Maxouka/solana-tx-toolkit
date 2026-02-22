@@ -118,18 +118,43 @@ export default function WhyMe({ onNavigate }: WhyMeProps) {
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Big title */}
+      {/* GM Header with memes */}
       <div className="relative pt-2 pb-4">
         <div className="absolute top-0 left-0 w-96 h-40 bg-sol-purple/8 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute top-4 right-12 w-64 h-32 bg-sol-green/5 rounded-full blur-3xl pointer-events-none" />
         <div className="relative">
-          <h1 className="text-5xl font-black text-white tracking-tight uppercase">
+          <div className="flex items-center gap-4 mb-2">
+            <h1 className="text-5xl font-black text-white tracking-tight uppercase">
+              GM <span className="text-sol-green">☀️</span>
+            </h1>
+          </div>
+          <h2 className="text-3xl font-black text-white tracking-tight uppercase mb-3">
             Pourquoi <span className="text-sol-purple">Moi</span>
-          </h1>
-          <p className="mt-3 text-sm text-gray-400 max-w-2xl leading-relaxed">
+          </h2>
+
+          {/* Meme row */}
+          <div className="flex items-center gap-4 mb-4">
+            <img
+              src={`${import.meta.env.BASE_URL}akrwk8.jpg`}
+              alt="Recrutez moi"
+              className="h-28 rounded-lg border border-sol-border shadow-lg"
+            />
+            <img
+              src={`${import.meta.env.BASE_URL}milady44444.webp`}
+              alt="Milady"
+              className="h-24 rounded-lg border border-sol-border shadow-lg"
+            />
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-sol-green font-bold">wagmi ser 🫡</span>
+              <span className="text-[10px] text-gray-500">not my first cycle</span>
+            </div>
+          </div>
+
+          <p className="text-sm text-gray-400 max-w-2xl leading-relaxed">
             Chaque composant de ce toolkit a ete construit pour demontrer les competences
-            techniques exactes requises pour ce poste. Chaque carte ci-dessous associe
-            une exigence du poste a du code fonctionnel que vous pouvez explorer.
+            techniques exactes requises pour ce poste. Pas un exercice scolaire — construit
+            par quelqu'un qui utilise Phantom au quotidien, qui sait que Jito tips c'est
+            pas optionnel, et qui connait la diff entre un rug et un rebase.
           </p>
         </div>
       </div>
